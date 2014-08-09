@@ -2,7 +2,23 @@
 import urllib
 import time
 import re
-#import os
+import os
+
+def gera_grafico(nome_arq, title):
+	f = os.popen("gnuplot", "w")
+	print >> f, "set grid"
+	print >> f, "set datafile separator ' '"
+	print >> f, "set term png size 1024, 768"
+	print >> f, "set output 'grafico_topico.png'"
+	print >> f, "set xdata time"
+	print >> f, "set timefmt '%d/%m/%Y'"
+	print >> f, "set format x '%d/%m/%Y'"
+	print >> f, "set xtics nomirror rotate by -270 scale 1"
+	print >> f, "set xlabel 'Data'"
+	print >> f, "set ylabel 'Posts'"
+	print >> f, "set title '"+title+"'"
+	print >> f, "plot 'sorteddates.txt' using 1:2 with lines"
+	f.flush()
 
 def compara_data(data1, data2):
 	dia1 = data1.split("/", 1)[0]
@@ -66,6 +82,7 @@ def num_pages(pagina):
 
 #comeco da main
 url_base = raw_input("URL do topico: ")
+titulo = raw_input("Titulo do topico: ")
 
 pagina = urllib.urlopen(url_base)
 num = num_pages(pagina)
@@ -106,4 +123,5 @@ for x in dic_datas:
 arq.close()
 
 ordena_arquivo("unsorteddates.txt")
+gera_grafico("sorteddates.txt", titulo)
 print "Pronto!"
